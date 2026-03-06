@@ -446,65 +446,76 @@ def make_topic_landscape(institution_id, rca_topic_df, embed_df, topics_df, doma
                           xaxis=_ax, yaxis=_ax)
         return fig
 
-    # --- log scale + normalise (exact copy from example) ---
+    # --- log scale + normalise ---
     all_color_values     = np.array([d['color_value'] for d in all_data])
     all_color_values_log = np.log1p(all_color_values)
     min_val = all_color_values_log.min()
     max_val = all_color_values_log.max()
 
-    # sort ascending: highest drawn on top
+    # sort ascending so highest-RCA dots are drawn last (on top)
     all_data.sort(key=lambda d: d['color_value'])
 
-    fig = go.Figure()
-    plotted_communities = set()
-
+    # precompute per-point visuals
     for item in all_data:
-        comm_id    = item['comm_id']
-        label      = item['label']
-        base_color = domain_base_colors[comm_id]
+        base_color = domain_base_colors[item['comm_id']]
+        log_v      = np.log1p(item['color_value'])
+        norm_v     = (log_v - min_val) / (max_val - min_val + 1e-9)
+        intensity  = norm_v ** 3
+        r = int(255 - intensity * (255 - base_color[0]))
+        g = int(255 - intensity * (255 - base_color[1]))
+        b = int(255 - intensity * (255 - base_color[2]))
+        item['color_str']   = blend_white_to_color(norm_v, base_color)
+        item['dot_size']    = 3 + (norm_v ** 2.5) * 15
+        item['hover_color'] = f'rgb({r},{g},{b})'
+        item['font_color']  = get_hover_font_color(r, g, b)
+        item['hover_text']  = (
+            f"{topic_id_name_dict.get(item['node'], str(item['node']))}"
+            f"<br>{item['color_value']:.1f}"
+        )
 
-        color_value_log = np.log1p(item['color_value'])
-        norm_value      = (color_value_log - min_val) / (max_val - min_val + 1e-9)
-        intensity       = norm_value ** 3
-        hover_r = int(255 - intensity * (255 - base_color[0]))
-        hover_g = int(255 - intensity * (255 - base_color[1]))
-        hover_b = int(255 - intensity * (255 - base_color[2]))
-        color_str       = blend_white_to_color(norm_value, base_color)
-        dot_size        = 3 + (norm_value ** 2.5) * 15
-        font_color      = get_hover_font_color(hover_r, hover_g, hover_b)
+    fig = go.Figure()
+
+    # One trace per domain (4 traces total) — sorted data preserves z-order
+    for comm_id in unique_comms:
+        items = [d for d in all_data if d['comm_id'] == comm_id]
+        if not items:
+            continue
+        base_color = domain_base_colors[comm_id]
+        label      = items[0]['label']
+        shape      = items[0]['shape']
 
         fig.add_trace(go.Scatter(
-            x=[item['x']], y=[item['y']],
+            x=[d['x'] for d in items],
+            y=[d['y'] for d in items],
             mode='markers',
             marker=dict(
-                symbol=item['shape'],
-                size=dot_size,
-                color=color_str,
+                symbol=shape,
+                size=[d['dot_size'] for d in items],
+                color=[d['color_str'] for d in items],
                 line=dict(width=0.3, color='lightgray'),
             ),
+            text=[d['hover_text'] for d in items],
             hoverinfo='text',
-            text=f"{topic_id_name_dict.get(item['node'], str(item['node']))}<br>{item['color_value']:.1f}",
-            hoverlabel=dict(bgcolor=color_str, font_size=14, font_color=font_color),
+            hoverlabel=dict(
+                bgcolor=[d['hover_color'] for d in items],
+                font_size=14,
+                font_color=[d['font_color'] for d in items],
+            ),
             showlegend=False,
             legendgroup=label,
         ))
 
-        if comm_id not in plotted_communities:
-            base_color_str = f'rgb({base_color[0]}, {base_color[1]}, {base_color[2]})'
-            fig.add_trace(go.Scatter(
-                x=[None], y=[None],
-                mode='markers',
-                name=label,
-                marker=dict(
-                    symbol=item['shape'],
-                    size=40,
-                    color=base_color_str,
-                    line=dict(width=0.3, color='white'),
-                ),
-                showlegend=True,
-                legendgroup=label,
-            ))
-            plotted_communities.add(comm_id)
+        # Legend entry
+        base_color_str = f'rgb({base_color[0]}, {base_color[1]}, {base_color[2]})'
+        fig.add_trace(go.Scatter(
+            x=[None], y=[None],
+            mode='markers',
+            name=label,
+            marker=dict(symbol=shape, size=40, color=base_color_str,
+                        line=dict(width=0.3, color='white')),
+            showlegend=True,
+            legendgroup=label,
+        ))
 
     fig.update_layout(
         plot_bgcolor='white',
