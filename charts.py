@@ -475,37 +475,32 @@ def make_topic_landscape(institution_id, rca_topic_df, embed_df, topics_df, doma
 
     fig = go.Figure()
 
-    # One trace per domain (4 traces total) — sorted data preserves z-order
+    # Single trace for all points — globally sorted ascending so highest-RCA on top
+    fig.add_trace(go.Scatter(
+        x=[d['x'] for d in all_data],
+        y=[d['y'] for d in all_data],
+        mode='markers',
+        marker=dict(
+            symbol=[d['shape'] for d in all_data],
+            size=[d['dot_size'] for d in all_data],
+            color=[d['color_str'] for d in all_data],
+            line=dict(width=0.3, color='lightgray'),
+        ),
+        text=[d['hover_text'] for d in all_data],
+        hoverinfo='text',
+        hoverlabel=dict(
+            bgcolor=[d['hover_color'] for d in all_data],
+            font_size=14,
+            font_color=[d['font_color'] for d in all_data],
+        ),
+        showlegend=False,
+    ))
+
+    # Legend entries (one per domain, invisible data)
     for comm_id in unique_comms:
-        items = [d for d in all_data if d['comm_id'] == comm_id]
-        if not items:
-            continue
         base_color = domain_base_colors[comm_id]
-        label      = items[0]['label']
-        shape      = items[0]['shape']
-
-        fig.add_trace(go.Scatter(
-            x=[d['x'] for d in items],
-            y=[d['y'] for d in items],
-            mode='markers',
-            marker=dict(
-                symbol=shape,
-                size=[d['dot_size'] for d in items],
-                color=[d['color_str'] for d in items],
-                line=dict(width=0.3, color='lightgray'),
-            ),
-            text=[d['hover_text'] for d in items],
-            hoverinfo='text',
-            hoverlabel=dict(
-                bgcolor=[d['hover_color'] for d in items],
-                font_size=14,
-                font_color=[d['font_color'] for d in items],
-            ),
-            showlegend=False,
-            legendgroup=label,
-        ))
-
-        # Legend entry
+        label      = domain_id_name_dict.get(comm_id, f'Domain {comm_id}')
+        shape      = marker_styles[comm_id % len(marker_styles)]
         base_color_str = f'rgb({base_color[0]}, {base_color[1]}, {base_color[2]})'
         fig.add_trace(go.Scatter(
             x=[None], y=[None],
@@ -514,7 +509,6 @@ def make_topic_landscape(institution_id, rca_topic_df, embed_df, topics_df, doma
             marker=dict(symbol=shape, size=40, color=base_color_str,
                         line=dict(width=0.3, color='white')),
             showlegend=True,
-            legendgroup=label,
         ))
 
     fig.update_layout(
