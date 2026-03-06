@@ -121,7 +121,7 @@ with st.sidebar:
     sidebar_idx = select_options.index(st.session_state.inst_name)
     selected_name_sidebar = st.selectbox(
         'Select institution', select_options, index=sidebar_idx,
-        label_visibility='collapsed', key='sidebar_inst'
+        label_visibility='collapsed',
     )
     if selected_name_sidebar != st.session_state.inst_name:
         st.session_state.inst_name = selected_name_sidebar
@@ -249,7 +249,6 @@ if st.session_state.inst_name == PLACEHOLDER:
         )
     if chosen != PLACEHOLDER:
         st.session_state.inst_name = chosen
-        st.session_state['sidebar_inst'] = chosen
         st.rerun()
 
     st.markdown('<div style="height:2.5rem"></div>', unsafe_allow_html=True)
