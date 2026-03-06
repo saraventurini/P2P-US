@@ -1,0 +1,63 @@
+I want to create a Dashboard for US institutions comparison. The audience will be institutions. It is called 'P2P - Pears to Peers: Benchmarking among equals'. An pears with pears comparison ensures that performance, quality, or outcomes are evaluated among true peers — those operating under similar conditions, scales, and contexts.
+
+These are the data in the 'Data' folder:
+- institutions_info_df_selected: columns ['institution_id', 'institution_name', 'country_code', 'type', 'ror', 'grid', 'continent_name', 'country_name', 'latitude', 'longitude', 'research_level']
+- institutions_relationships_df_selected: columns ['instituion_id','child']. One institutions is the aggregation of its child.
+- df_topics: columns ['topic_id_scaled', 'topic_id', 'topic_name', 'subfield_id', 'subfield_name', 'field_id', 'field_name', 'domain_id', 'domain_name', 'keywords', 'summary', 'wikipedia_url', 'subfield_id_scaled', 'field_id_scaled', 'domain_id_scaled']. Each topic belongs to one subfield, which belong to one field, which belong to one domain.
+- dict_institution_id_name: dictionary keys instituion_id and values institution name
+Inside 'Data' folder there are 3 subfolders, corresponding to different granularity, called 'All' (data for each institution for the whole dataset), 'Domain' (data divided by domain),'Field' (data divided by fields). Inside each of them there are these files:
+- RCA_df_selected: columns ['period_id', 'institution_id', 'field_id_scaled', 'domain_id', 'portfolio_composition', 'field_name', 'domain_name'], where for each time period (4 periods: {0: (1990, 1999), 1: (2000, 2009), 2: (2010, 2019), 3: (2020, 2024)}), each institution, each field, I have the corresponding RCA normalized value, that we call portfolio composition. For the 'All' and 'Domain' level, we have a value for each field, instead for the 'Field' level , we have a value for each subfield.
+- institutions_stats_selected: columns ['year', 'institution_id', 'n_works', 'n_works_weighted', 'n_authors']. For each year, each institution, I have these info.
+- institutions_stats_periods_selected: columns ['period_id', 'institution_id', 'n_authors', 'n_works']. Where for each year and each institution I have number of works and authors.
+- edges_df_selected_dict_all: dictionary 4 keys ['avg_weig', 'origin', 'geom', 'geom2']. I want to use the 'geom2' entry. For each of them correspond a dataframe with columns ['similarity_score', 'institution_id', 'institution_id_neighbor','institution_id_scaled2', 'institution_id_scaled2_neighbor']. Where, for each institution, I have its neighbours (institutions most similar according to metric in the key) with the corrispondent similarity. Institution_id correspond to the instituion id in OpenAlex, instead institution_id_scaled is the id in the subset of institutions in US considered.
+- entropy_df_selected: columns ['institution_id', 'period_id', 'disorder_index']. For each institution and period, we show the entropy of the corresponding portfolio. We call it disorder index.
+- institution_peers_dict: dictionary key institution_id_scaled and values the corresponding neighbours.
+- impact_selected: columns ['institution_id', 'year', 'relative_impact', 'impact_uniformity']. For each institution, and each year, it is regarding the impact.
+Inside 'Data' folder there is also the subfolder 'Topic', which contain:
+- RCA_topic_df_selected: ['topic_id_scaled', 'count_specialized_topic', 'institution_id', 'topic_id', 'domain_id_scaled', 'field_id_scaled', 'value']. Where we have the RCA at the topic level. 
+- topics_embedding_reduced_df: columns ['topic_id_scaled', 'topic_id', 'feature_0', 'feature_1']. This is an embedding in 2 dimentions of the topics.
+
+What I want tyo see in my dashboard is:
+- The user can select the university that wants to look at. 
+- For each institution, the default page show the info considering the whole dataset, but then the user can also decide to select to look at the info at the granularity of a specific domain or field.
+We want to show:
+- Map of its position
+- Research level
+- Number of works/authors (last period or last year)
+- Child institutions
+- Peers institutions with similarity level
+- Portfolio composition (show also different domains belong.)
+- Disorder Index
+- Topic embedding with values of the RCA (both colors and size connected to it). Show also different domains belong.
+- For each year, the ranking of the institutions respect to the peers looking at Relative impact (till year 2022).
+- Plot showing, in time, the relative impact vs impact uniformity.
+- Historical plots: like number works/author/disorder in time
+
+Feel free to add info from the data and to visualize and insert them in the best way.
+I like these colors: [(147,207,189), (98,168,183), (81,128,177), (34,63,115)], and I like the New York Times visualizations.
+
+
+
+
+I would like to:
+- add initial page, not start with first institution as default
+- I do not like that some things are orange
+- Do not show the type of institution by now
+- Peer institutions part not nice to look at (very long bars, small names and values)
+- Publications and Authors over Time, not enough horizontal space
+- Disorder index over Time with 4 plots not nice 
+- Topic landscape: no grid, no labels and values axises, more evident the area where the institution is better
+- Relative Impact vs Impact uniformity, better Bubble plot where only some years, Relative Impact x-axis and Impact uniformity dot sizes, insert institution and peers.
+
+
+It is very bad. I want it to seem professional. Take some ideas from 'dashboard_example.py' but not reproduce it exactly.
+
+
+I would like to:
+- First page: I do not want a left side bar.
+- I see the notes. DO not say the metric geom3 used. And say also that is implemented by MOBS Lab, Network Science Institute, Northeastern University. Keep Data Openalex, coverage united states, and time period. 
+- First page:Select an institution from the sidebar to explore its research portfolio, peer landscape, impact trajectory, and topic specialization. After space. 
+- I liked the first part before, with R1 flag, Publications, Authors, Disorder index, Research level (also growing or decreasing trend) not in colored cards but New York Times stile. If n research level, delate item.
+- There are still some orange components, please get rid of that color. I think it is the default one for streamlit.
+- Topic landscape, make it even more evident (size and color). Maybe logarithm? 
+- Impact analysis seem crushed (too much high, and not enough horizontal space)

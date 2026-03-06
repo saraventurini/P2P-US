@@ -1,0 +1,153 @@
+/* =========================================================
+   P2P Dashboard — Professional styles
+   ========================================================= */
+
+/* --- Global typography & background --- */
+html, body, [class*="css"] {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background-color: #FFFFFF;
+    color: #1a1a1a;
+}
+
+/* --- Tighter block padding --- */
+.block-container {
+    padding-top: 1.5rem !important;
+    padding-bottom: 2rem !important;
+    max-width: 1400px !important;
+}
+
+/* --- Headings --- */
+h1, h2, h3, h4 {
+    font-family: 'Arial', sans-serif !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.01em;
+    color: #1a1a1a;
+}
+
+/* --- Sidebar --- */
+section[data-testid="stSidebar"] {
+    background-color: #F2F4F8 !important;
+    border-right: 1px solid #E8E8E8;
+}
+
+/* --- Chart containers: clean, no border --- */
+div[data-testid="stPlotlyChart"] {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* --- Expander --- */
+details {
+    border: 1px solid #E8E8E8 !important;
+    border-radius: 2px;
+}
+
+/* --- Select boxes --- */
+div[data-baseweb="select"] {
+    border-radius: 2px !important;
+    background-color: #FFFFFF !important;
+}
+div[data-baseweb="select"] > div {
+    background-color: #FFFFFF !important;
+}
+
+/* -------------------------------------------------------
+   Override ALL Streamlit orange / red accent colours
+   ------------------------------------------------------- */
+
+/* Set the CSS variable Streamlit uses for its primary color */
+:root {
+    --primary-color: #223F73 !important;
+    --primary-color-transparent: rgba(34, 63, 115, 0.2) !important;
+}
+
+/* Slider track fill */
+div[data-baseweb="slider"] [data-testid="stSliderTrackFill"],
+[data-testid="stSlider"] [data-testid="stSliderTrackFill"] {
+    background-color: #223F73 !important;
+}
+
+/* Slider thumb / handle */
+div[data-baseweb="slider"] [role="slider"],
+[data-testid="stSlider"] [role="slider"] {
+    background-color: #223F73 !important;
+    border-color: #223F73 !important;
+    outline-color: #223F73 !important;
+    box-shadow: none !important;
+}
+
+/* Slider value label (the floating text above thumb) */
+[data-testid="stSlider"] p,
+[data-testid="stSlider"] span,
+div[data-baseweb="slider"] [data-testid="stMarkdownContainer"] p {
+    color: #223F73 !important;
+}
+
+/* Radio button: remove all focus/selection highlights on labels */
+[data-baseweb="radio"] label:focus,
+[data-baseweb="radio"] label:focus-within,
+[data-baseweb="radio"] label:focus-visible,
+[data-baseweb="radio"] [data-checked="true"] ~ span,
+[data-baseweb="radio"] span {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Selectbox focus border — no glow */
+div[data-baseweb="select"] *:focus,
+div[data-baseweb="input"] *:focus {
+    border-color: #223F73 !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Progress bars / spinners */
+[data-testid="stSpinner"] > div,
+.stProgress > div > div > div > div {
+    background-color: #223F73 !important;
+}
+
+/* Catch-all: any element Streamlit renders with its primary orange/red */
+[style*="color: rgb(255, 75, 75)"],
+[style*="color: rgb(255, 76, 76)"],
+[style*="background-color: rgb(255, 75, 75)"],
+[style*="background-color: rgb(255, 76, 76)"] {
+    color: #223F73 !important;
+    background-color: #223F73 !important;
+}
+
+/* --- Scrollbar --- */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #F5F5F5; }
+::-webkit-scrollbar-thumb { background: #CCCCCC; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #AAAAAA; }
+
+/* --- Hide Streamlit branding --- */
+#MainMenu { visibility: hidden; }
+footer    { visibility: hidden; }
+header    { visibility: hidden; }
+
+/* --- Radio buttons --- */
+div[data-testid="stRadio"] label {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.88rem;
+}
+
+/* --- Caption / footnotes --- */
+.stCaption {
+    font-family: 'Georgia', serif;
+    font-size: 0.76rem;
+    color: #888888;
+    font-style: italic;
+}
+
+/* --- Dataframe borders --- */
+div[data-testid="stDataFrame"] {
+    border: 1px solid #E8E8E8 !important;
+    border-radius: 2px;
+}
+
+/* --- Section dividers --- */
+hr { border: none; border-top: 1px solid #E8E8E8; margin: 0.6rem 0; }
