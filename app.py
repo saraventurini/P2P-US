@@ -249,6 +249,7 @@ if st.session_state.inst_name == PLACEHOLDER:
         )
     if chosen != PLACEHOLDER:
         st.session_state.inst_name = chosen
+        st.session_state['sidebar_inst'] = chosen
         st.rerun()
 
     st.markdown('<div style="height:2.5rem"></div>', unsafe_allow_html=True)
