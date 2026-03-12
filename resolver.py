@@ -59,7 +59,6 @@ def get_slice(
         entropy      = d['entropy'][d['entropy']['institution_id'] == institution_id]
         impact       = d['impact'][d['impact']['institution_id'] == institution_id]
         stats        = d['stats'][d['stats']['institution_id'] == institution_id]
-        stats_periods = d['stats_periods'][d['stats_periods']['institution_id'] == institution_id]
 
     elif granularity == 'Domain':
         d = load_domain()
@@ -75,8 +74,6 @@ def get_slice(
         impact       = impact_d[impact_d['institution_id'] == institution_id] if not impact_d.empty else impact_d
         stats_d      = d['stats'].get(key, pd.DataFrame())
         stats        = stats_d[stats_d['institution_id'] == institution_id] if not stats_d.empty else stats_d
-        stats_p_d    = d['stats_periods'].get(key, pd.DataFrame())
-        stats_periods = stats_p_d[stats_p_d['institution_id'] == institution_id] if not stats_p_d.empty else stats_p_d
 
     elif granularity == 'Field':
         d = load_field()
@@ -91,8 +88,6 @@ def get_slice(
         impact       = impact_d[impact_d['institution_id'] == institution_id] if not impact_d.empty else impact_d
         stats_d      = d['stats'].get(key, pd.DataFrame())
         stats        = stats_d[stats_d['institution_id'] == institution_id] if not stats_d.empty else stats_d
-        stats_p_d    = d['stats_periods'].get(key, pd.DataFrame())
-        stats_periods = stats_p_d[stats_p_d['institution_id'] == institution_id] if not stats_p_d.empty else stats_p_d
     else:
         raise ValueError(f"Unknown granularity: {granularity}")
 
@@ -106,7 +101,6 @@ def get_slice(
         'entropy':        entropy.reset_index(drop=True) if hasattr(entropy, 'reset_index') else entropy,
         'impact':         impact.reset_index(drop=True) if hasattr(impact, 'reset_index') else impact,
         'stats':          stats.reset_index(drop=True) if hasattr(stats, 'reset_index') else stats,
-        'stats_periods':  stats_periods.reset_index(drop=True) if hasattr(stats_periods, 'reset_index') else stats_periods,
         'peers_scaled':   peers_scaled,
         'edges':          edges,
     }

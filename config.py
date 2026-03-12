@@ -1,11 +1,10 @@
 import os
 
-DATA_ROOT   = os.path.join(os.path.dirname(__file__), 'Data')
+DATA_ROOT   = os.path.join(os.path.dirname(__file__), 'Data_Tables')
 ALL_PATH    = os.path.join(DATA_ROOT, 'All')
 DOMAIN_PATH = os.path.join(DATA_ROOT, 'Domain')
 FIELD_PATH  = os.path.join(DATA_ROOT, 'Field')
 TOPIC_PATH  = os.path.join(DATA_ROOT, 'Topic')
-EDGE_TYPE   = 'geom2'
 
 PALETTE = {
     'light_green': 'rgb(147,207,189)',
